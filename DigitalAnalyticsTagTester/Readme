@@ -1,0 +1,29 @@
+
+Step 1
+driver.get()
+get Tags - check for num of tags (0 -> go to nav1)
+		 - get tag request
+		 		-> parse Tags
+		 				-> get tag details
+		 						-> report
+webdriver nav1
+get Tags - check for num of tags (0 -> go to nav2)
+		 - get tag request
+		 		-> parse Tags
+		 				-> get tag details
+		 						-> report
+
+
+webdriver nav2
+get Tags - check for num of tags (0 -> go to nav3)
+		 - get tag request
+		 		-> parse Tags
+		 				-> get tag details
+		 						-> report
+
+webdriver nav3
+get Tags - check for num of tags (0 -> go to nav3)
+		 - get tag request
+		 		-> parse Tags
+		 				-> get tag details
+		 						-> report
