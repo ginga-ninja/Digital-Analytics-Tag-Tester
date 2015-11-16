@@ -19,10 +19,11 @@ public class DATester {
     {
     	tagTypes.put("1", "Page View");
     	tagTypes.put("3", "Order");
-    	tagTypes.put("4", "Shop5");
+    	tagTypes.put("4", "Shop");
     	tagTypes.put("5", "Product View");
         tagTypes.put("6", "Page View + Tech Props");
         tagTypes.put("8", "Element");
+        tagTypes.put("14", "Conversion Event");
     }
     
     public static void checkForLib(WebDriver driver){
@@ -158,11 +159,33 @@ public class DATester {
 					break;
 			case 3: getOrderTagDetails(tagMap);
 					break;
+			case 4: getShopTagDetails(tagMap);
+					break;
 			case 5: getProductviewTagDetails(tagMap);
 					break;
 			case 6: getPageviewTagDetails(tagMap);
                  	break;
+			case 14: getConversionEventTagDetails(tagMap);
+         			break;
     }
+		
+	}
+
+	private static void getShopTagDetails(Map<String, String> m) {
+		// TODO Auto-generated method stub
+		
+		if (!m.containsKey("on")) {
+			System.out.println("TAG: " + tagTypes.get(m.get("tid"))+"5");
+		} else {
+			System.out.println("TAG: " + tagTypes.get(m.get("tid"))+"9");
+		}
+				
+		
+	}
+
+	private static void getConversionEventTagDetails(Map<String, String> m) {
+		// TODO Auto-generated method stub
+		System.out.println("in conversion event tag");
 		
 	}
 
