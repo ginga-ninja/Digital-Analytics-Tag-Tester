@@ -9,21 +9,36 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+
 public class DATester {
 	
-	private static String expClientID = "90397055";
+	//private static String expClientID = "90397055";
 	private static String currentDC;
+	private static ExtentReports extentReport;
+	private static ExtentTest testRun;
+	private static int stepCounter;
 	
 	public final static HashMap<String, String> tagTypes = new HashMap<String, String>();
     static
     {
     	tagTypes.put("1", "Page View");
+    	tagTypes.put("2", "Registration");
     	tagTypes.put("3", "Order");
     	tagTypes.put("4", "Shop");
     	tagTypes.put("5", "Product View");
         tagTypes.put("6", "Page View + Tech Props");
         tagTypes.put("8", "Element");
         tagTypes.put("14", "Conversion Event");
+    }
+    
+    public static void init(String reportName){
+    	//init the extent report here
+    	extentReport = new ExtentReports("/Users/jamielockhart/PetshopOrder.html", true);
+    	testRun = extentReport.startTest("PetshopOrder Test", "Sample Description");
+    	stepCounter = 0;
     }
     
     public static void checkForLib(WebDriver driver){
@@ -37,14 +52,22 @@ public class DATester {
     
     public static void getTags(WebDriver driver, JavascriptExecutor js){
     	//  determine if any tags fired.  If yes then parse and examine
+    	//testRun.log(LogStatus.INFO, "Step", driver.getCurrentUrl());
+    	
+    	stepCounter = stepCounter+1;
+    	System.out.println("STEP " + stepCounter);
+    	testRun.log(LogStatus.INFO, "Step "+ stepCounter, driver.getCurrentUrl());
+    	
     	String tagRequest="";
 		Long numTags=(long) 0;
 		// attempt to get the number of tags fired.  If not possible exit
 		try {
 			numTags = (Long)js.executeScript("return document.cmTagCtl.cTI.length");
 			System.out.println("Num of tags fired = " + numTags.intValue());
+			testRun.log(LogStatus.INFO, "Step", "Num of tags fired = " + numTags.intValue());
 		} catch (Exception e){
 			System.out.println("No tags found!!!");
+			testRun.log(LogStatus.INFO, "", "No tags found on this page.");
 			//driver.quit();
 			//System.exit(1);
 			return;
@@ -64,26 +87,34 @@ public class DATester {
     	//get ci, pi, cg, attrs (p_a1 etc)
     	
     	System.out.println("TAG: "+ tagTypes.get(m.get("tid")));
+    	testRun.log(LogStatus.INFO, "", tagTypes.get(m.get("tid")));
     	System.out.println("- Data Collection Destination: "+ currentDC);
+    	testRun.log(LogStatus.INFO, "", "Data Collection Destination: "+ currentDC);
     	
     	String clientid = m.get("ci");       //get client id
     	System.out.println("- Client id: "+ clientid);
+    	testRun.log(LogStatus.INFO, "", "Client ID: " + clientid);
     	
+    	//get page id
     	try{
 			System.out.println("- Page id: " + URLDecoder.decode(m.get("pi"),"UTF-8"));
+			testRun.log(LogStatus.INFO, "", "Page ID: " + URLDecoder.decode(m.get("pi"),"UTF-8"));
 			System.out.println("- Page URL: " + URLDecoder.decode(m.get("ul"),"UTF-8"));
 		}
 		catch (Exception e){
-			System.out.println("decoding problem!");
+			System.out.println("Decoding problem");
 		}
     	
+    	//get page category id
     	String category = m.get("cg");       //get category id
     	System.out.println("- Category: "+ category);
+    	testRun.log(LogStatus.INFO, "", "Category ID: " + category);
     	
     	//get explore attributes
     	for (int i=1;i<=50;i++){
         	if (m.containsKey("pv_a"+i)){
         		System.out.println("Attribute " + i + ": " + m.get("pv_a" + i));
+        		testRun.log(LogStatus.INFO, "", "Attribute " + i + ": " + m.get("pv_a" + i));
         	}
         }
     }
@@ -122,6 +153,13 @@ public class DATester {
     		//catch (Exception e){
     		//	System.out.println("problem!");
     		//}
+        	
+        	//get explore attributes
+        	for (int i=1;i<=50;i++){
+            	if (m.containsKey("pr_a"+i)){
+            		System.out.println("Attribute " + i + ": " + m.get("pr_a" + i));
+            	}
+            }
     	
     }
 	
@@ -157,6 +195,8 @@ public class DATester {
 		switch (tid) {
 			case 1: getPageviewTagDetails(tagMap);
 					break;
+			case 2: getRegistrationTagDetails(tagMap);
+					break;
 			case 3: getOrderTagDetails(tagMap);
 					break;
 			case 4: getShopTagDetails(tagMap);
@@ -170,15 +210,36 @@ public class DATester {
     }
 		
 	}
+	
+	public static void completeReport(){
+		// called at end of test - flushes the report
+		testRun.log(LogStatus.PASS, "Test complete. Check your tag output.");
+	    extentReport.endTest(testRun);
+		extentReport.flush();
+	}
+
+	private static void getRegistrationTagDetails(Map<String, String> m) {
+		// TODO Auto-generated method stub
+		//cd = regid, cm = registrants email address
+		System.out.println("TAG: "+ tagTypes.get(m.get("tid")));
+		testRun.log(LogStatus.INFO, "", tagTypes.get(m.get("tid")));
+		
+	}
 
 	private static void getShopTagDetails(Map<String, String> m) {
 		// TODO Auto-generated method stub
+		String shopTag;
 		
 		if (!m.containsKey("on")) {
 			System.out.println("TAG: " + tagTypes.get(m.get("tid"))+"5");
+			shopTag = tagTypes.get(m.get("tid"))+"5";
 		} else {
 			System.out.println("TAG: " + tagTypes.get(m.get("tid"))+"9");
+			shopTag = tagTypes.get(m.get("tid"))+"9";
 		}
+		testRun.log(LogStatus.INFO, "", shopTag);
+		
+    	System.out.println("- Data Collection Destination: "+ currentDC);
 				
 		
 	}
@@ -186,6 +247,8 @@ public class DATester {
 	private static void getConversionEventTagDetails(Map<String, String> m) {
 		// TODO Auto-generated method stub
 		System.out.println("in conversion event tag");
+		System.out.println("TAG: "+ tagTypes.get(m.get("tid")));
+    	testRun.log(LogStatus.INFO, "", tagTypes.get(m.get("tid")));
 		
 	}
 
@@ -195,6 +258,8 @@ public class DATester {
     	//get on, cd, tr, attrs (p_a1 etc)
     	
     	System.out.println("TAG: "+ tagTypes.get(m.get("tid")));
+    	testRun.log(LogStatus.INFO, "", tagTypes.get(m.get("tid")));
+    	
     	System.out.println("- Data Collection Destination: "+ currentDC);
     	
     	String clientid = m.get("ci");       //get client id
@@ -220,7 +285,7 @@ public class DATester {
     	//get explore attributes
     	for (int i=1;i<=50;i++){
         	if (m.containsKey("o_a"+i)){
-        		System.out.println("Attribute " + i + ": " + m.get("o_a" + i));
+        		System.out.println("- Attribute " + i + ": " + m.get("o_a" + i));
         	}
         }
 		

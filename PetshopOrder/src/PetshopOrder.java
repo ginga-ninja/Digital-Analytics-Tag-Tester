@@ -9,6 +9,10 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+
 
 public class PetshopOrder {
   private WebDriver driver;
@@ -16,6 +20,8 @@ public class PetshopOrder {
   private boolean acceptNextAlert = true;
   private StringBuffer verificationErrors = new StringBuffer();
   private JavascriptExecutor js;
+  //private ExtentReports report;
+  public String testName = "PetshopOrder";
 
   @Before
   public void setUp() throws Exception {
@@ -23,28 +29,42 @@ public class PetshopOrder {
     baseUrl = "http://petshop.scl.com/mspetshop/";
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     js = (JavascriptExecutor) driver;    //need to add this for DA tag testing
+    //report = new ExtentReports("/Users/jamielockhart/PetshopOrder.html", true);
   }
 
   @Test
   public void testPetshopAddtocart() throws Exception {
-    driver.get(baseUrl);
+	//ExtentTest testRun = report.startTest("PetshopOrder Test", "Sample Description");
+	
+	DATester.init(testName);
+    
+	driver.get(baseUrl);
     Thread.sleep(2000);     //add this for DA Tag Testing
+    //testRun.log(LogStatus.INFO, "Step 1", baseUrl);
     DATester.checkForLib(driver);
     DATester.getTags(driver, js);     //add this for DA Tag Testing
+    
     driver.findElement(By.linkText("Fish")).click();
     Thread.sleep(2000);
+    //testRun.log(LogStatus.INFO, "Step 2", driver.getCurrentUrl());
     DATester.checkForLib(driver);
     DATester.getTags(driver, js);
+    
     driver.findElement(By.linkText("Koi")).click();
     Thread.sleep(2000);
+    //testRun.log(LogStatus.INFO, "Step 3", driver.getCurrentUrl());
     DATester.checkForLib(driver);
     DATester.getTags(driver, js);
+    
     driver.findElement(By.linkText("Spotted")).click();
     Thread.sleep(2000);
+    //testRun.log(LogStatus.INFO, "Step 4", driver.getCurrentUrl());
     DATester.checkForLib(driver);
     DATester.getTags(driver, js);
+    
     driver.findElement(By.cssSelector("img[alt=\"Add to Cart\"]")).click();
     Thread.sleep(2000);
+    //testRun.log(LogStatus.INFO, "Step 5", driver.getCurrentUrl());
     DATester.checkForLib(driver);
     DATester.getTags(driver, js);
     //try {
@@ -52,26 +72,40 @@ public class PetshopOrder {
     //} catch (Error e) {
    //   verificationErrors.append(e.toString());
     //}
+    
     driver.findElement(By.cssSelector("img[alt=\"Proceed to Checkout\"]")).click();
     Thread.sleep(2000);
+    //testRun.log(LogStatus.INFO, "Step 6", driver.getCurrentUrl());
     DATester.checkForLib(driver);
     DATester.getTags(driver, js);
+    
     driver.findElement(By.cssSelector("img[alt=\"Continue\"]")).click();
     Thread.sleep(2000);
+    //testRun.log(LogStatus.INFO, "Step 7", driver.getCurrentUrl());
     DATester.checkForLib(driver);
     DATester.getTags(driver, js);
+    
     driver.findElement(By.id("btnSubmit")).click();
     Thread.sleep(2000);
+    //testRun.log(LogStatus.INFO, "Step 8", driver.getCurrentUrl());
     DATester.checkForLib(driver);
     DATester.getTags(driver, js);
+    
     driver.findElement(By.id("btnContinue")).click();
     Thread.sleep(2000);
+    //testRun.log(LogStatus.INFO, "Step 9", driver.getCurrentUrl());
     DATester.checkForLib(driver);
     DATester.getTags(driver, js);
+    
     driver.findElement(By.cssSelector("img[alt=\"Continue\"]")).click();
     Thread.sleep(2000);
+    //testRun.log(LogStatus.INFO, "Step 10", driver.getCurrentUrl());
     DATester.checkForLib(driver);
     DATester.getTags(driver, js);
+    
+   // testRun.log(LogStatus.PASS, "Test complete. Check your tag output.");
+    //report.endTest(testRun);
+    DATester.completeReport();
     
   }
 
@@ -80,8 +114,10 @@ public class PetshopOrder {
     driver.quit();
     String verificationErrorString = verificationErrors.toString();
     if (!"".equals(verificationErrorString)) {
-      fail(verificationErrorString);
+    	//testRun.log(LogStatus.FAIL, "Test failed: " + verificationErrorString);
+    	fail(verificationErrorString);
     }
+    //report.flush();
   }
 
   private boolean isElementPresent(By by) {
