@@ -1,29 +1,9 @@
 
-Step 1
-driver.get()
-get Tags - check for num of tags (0 -> go to nav1)
-		 - get tag request
-		 		-> parse Tags
-		 				-> get tag details
-		 						-> report
-webdriver nav1
-get Tags - check for num of tags (0 -> go to nav2)
-		 - get tag request
-		 		-> parse Tags
-		 				-> get tag details
-		 						-> report
+IBM Digital Analytics Tag Tester - plugin for Selenium WebDriver
 
-
-webdriver nav2
-get Tags - check for num of tags (0 -> go to nav3)
-		 - get tag request
-		 		-> parse Tags
-		 				-> get tag details
-		 						-> report
-
-webdriver nav3
-get Tags - check for num of tags (0 -> go to nav3)
-		 - get tag request
-		 		-> parse Tags
-		 				-> get tag details
-		 						-> report
+1. Record your functional test case in Selenium IDE
+2. Export test case to Java (Junit)
+3. Import exported code to Eclipse
+4. Create a new DATester instance
+5. After each navigation add a call to the DATester.getTags() method
+6. At the end of the test call the DATester.completeReport() method.
